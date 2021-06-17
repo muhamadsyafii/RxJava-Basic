@@ -5,16 +5,22 @@ package com.syafii.rxjavabasic.controller
  * Copyright (c) 2021.
  * All Rights Reserved
  */
+import android.app.Dialog
 import android.os.Bundle
 import android.view.View
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.google.android.material.imageview.ShapeableImageView
+import com.syafii.rxjavabasic.R
 import com.syafii.rxjavabasic.databinding.ActivityMainBinding
 import com.syafii.rxjavabasic.model.User
 import com.syafii.rxjavabasic.model.repository.RepositoryImpl
 import com.syafii.rxjavabasic.network.ApiClient
+import com.syafii.rxjavabasic.util.ItemClickListener
 import com.syafii.rxjavabasic.util.PER_PAGE
 
 class MainActivity : AppCompatActivity(), MainContract.View {
@@ -87,6 +93,41 @@ class MainActivity : AppCompatActivity(), MainContract.View {
 
     override fun initView() {
         presenter.getListUser(PER_PAGE, page)
+
+        adapter.setItemClickListener(object : ItemClickListener<User> {
+            override fun onClick(data: User) {
+                Toast.makeText(this@MainActivity, data.firstName, Toast.LENGTH_SHORT).show()
+                showDialogUser(data)
+            }
+
+        })
+    }
+
+    private fun showDialogUser(data: User) {
+        val dialog = Dialog(this, R.style.Theme_AppCompat_Light_Dialog_MinWidth)
+        dialog.setContentView(R.layout.dialog_show_user)
+        val image = dialog.findViewById<ShapeableImageView>(R.id.sip_avatar)
+        val tvName = dialog.findViewById<TextView>(R.id.tv_name_dialog)
+        val tvEmail = dialog.findViewById<TextView>(R.id.tv_email_dialog)
+        val tvClose = dialog.findViewById<TextView>(R.id.tv_close)
+
+        Glide.with(this)
+            .load(data.avatar)
+            .error(R.drawable.ic_user)
+            .into(image)
+
+        tvName.text = "${data.firstName} ${data.lastName}"
+        tvEmail.text = data.email
+
+        tvClose.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        try {
+            dialog.show()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     override fun showLoading() {

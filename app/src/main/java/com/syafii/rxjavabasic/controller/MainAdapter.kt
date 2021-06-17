@@ -12,10 +12,13 @@ import com.bumptech.glide.Glide
 import com.syafii.rxjavabasic.R
 import com.syafii.rxjavabasic.databinding.ItemUserListBinding
 import com.syafii.rxjavabasic.model.User
+import com.syafii.rxjavabasic.util.ItemClickListener
 
-class MainAdapter : RecyclerView.Adapter<MainAdapter.MainViewHolder>() {
+class MainAdapter :
+    RecyclerView.Adapter<MainAdapter.MainViewHolder>() {
 
     private val list = mutableListOf<User>()
+    private lateinit var ItemClickListener: ItemClickListener<User>
 
     fun addItems(listUser: List<User>) {
         list.clear()
@@ -27,6 +30,12 @@ class MainAdapter : RecyclerView.Adapter<MainAdapter.MainViewHolder>() {
         list.addAll(listUser)
         notifyItemChanged(0, list.size)
     }
+
+    fun setItemClickListener(ItemClickListener: ItemClickListener<User>) {
+        this.ItemClickListener = ItemClickListener
+
+    }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainAdapter.MainViewHolder {
         return MainViewHolder(
@@ -40,12 +49,16 @@ class MainAdapter : RecyclerView.Adapter<MainAdapter.MainViewHolder>() {
 
     override fun onBindViewHolder(holder: MainAdapter.MainViewHolder, position: Int) {
         holder.bindData(list[position])
+        holder.itemView.setOnClickListener {
+            ItemClickListener.onClick(list[position])
+        }
     }
 
     override fun getItemCount() = list.size
 
     inner class MainViewHolder(private val binding: ItemUserListBinding) :
         RecyclerView.ViewHolder(binding.root) {
+
         fun bindData(listUser: User) {
             binding.run {
                 Glide.with(binding.root)
