@@ -15,18 +15,22 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.material.imageview.ShapeableImageView
+import com.google.firebase.firestore.FirebaseFirestore
 import com.syafii.rxjavabasic.R
 import com.syafii.rxjavabasic.databinding.ActivityMainBinding
 import com.syafii.rxjavabasic.model.User
 import com.syafii.rxjavabasic.model.repository.RepositoryImpl
 import com.syafii.rxjavabasic.network.ApiClient
 import com.syafii.rxjavabasic.util.ItemClickListener
+import com.syafii.rxjavabasic.util.LogErrorFireStore
 import com.syafii.rxjavabasic.util.PER_PAGE
 
 class MainActivity : AppCompatActivity(), MainContract.View {
     private lateinit var presenter: MainPresenter
     private lateinit var adapter: MainAdapter
     private lateinit var binding: ActivityMainBinding
+    private lateinit var fireStore: FirebaseFirestore
+    private lateinit var logErrorFireStore: LogErrorFireStore
 
     private var isLoading: Boolean = false
     private var page: Int = 1
@@ -37,11 +41,14 @@ class MainActivity : AppCompatActivity(), MainContract.View {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         adapter = MainAdapter()
+        fireStore = FirebaseFirestore.getInstance()
+        logErrorFireStore = LogErrorFireStore(fireStore)
         presenter = MainPresenter(this, RepositoryImpl(ApiClient.services))
         presenter.start()
     }
 
     override fun showListUser(user: List<User>) {
+
         if (user.isNotEmpty()) {
             if (page == 1) {
                 adapter.addItems(user)
@@ -89,6 +96,7 @@ class MainActivity : AppCompatActivity(), MainContract.View {
 
     override fun showError(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+        logErrorFireStore.sendLogs("GetUserList", message)
     }
 
     override fun initView() {

@@ -12,7 +12,7 @@ import io.reactivex.schedulers.Schedulers
 
 class MainPresenter(
     private val view: MainContract.View,
-    private val repositoryImpl: RepositoryImpl
+    private val repositoryImpl: RepositoryImpl,
 ) : MainContract.Presenter {
 
     private val compositeDisposable = CompositeDisposable()
