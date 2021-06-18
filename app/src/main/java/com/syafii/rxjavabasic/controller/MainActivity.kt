@@ -11,6 +11,7 @@ import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -48,7 +49,6 @@ class MainActivity : AppCompatActivity(), MainContract.View {
     }
 
     override fun showListUser(user: List<User>) {
-
         if (user.isNotEmpty()) {
             if (page == 1) {
                 adapter.addItems(user)
@@ -113,6 +113,13 @@ class MainActivity : AppCompatActivity(), MainContract.View {
 
     private fun showDialogUser(data: User) {
         val dialog = Dialog(this, R.style.Theme_AppCompat_Light_Dialog_MinWidth)
+        dialog.window?.setBackgroundDrawable(
+            ResourcesCompat.getDrawable(
+                resources,
+                R.drawable.rounded_white,
+                null
+            )
+        )
         dialog.setContentView(R.layout.dialog_show_user)
         val image = dialog.findViewById<ShapeableImageView>(R.id.sip_avatar)
         val tvName = dialog.findViewById<TextView>(R.id.tv_name_dialog)
