@@ -1,4 +1,10 @@
 package com.syafii.rxjavabasic.util
+/*
+ * Created by Muhamad Syafii
+ * Friday, 18/06/2021
+ * Copyright (c) 2021.
+ * All Rights Reserved
+ */
 
 import java.text.SimpleDateFormat
 import java.util.*

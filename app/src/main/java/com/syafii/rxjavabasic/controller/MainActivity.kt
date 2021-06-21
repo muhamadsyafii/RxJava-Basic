@@ -43,7 +43,7 @@ class MainActivity : AppCompatActivity(), MainContract.View {
         setContentView(binding.root)
         adapter = MainAdapter()
         fireStore = FirebaseFirestore.getInstance()
-        logErrorFireStore = LogErrorFireStore(fireStore)
+        logErrorFireStore = LogErrorFireStore(this, fireStore)
         presenter = MainPresenter(this, RepositoryImpl(ApiClient.services))
         presenter.start()
     }
